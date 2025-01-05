@@ -15,7 +15,7 @@ public class Player extends Person implements Fight{
 
     @Override
     public void attack(Person monster) {
-        monster.damageFromPlayer();
+        monsterz.damageFromPlayer();
     }
 
 }
