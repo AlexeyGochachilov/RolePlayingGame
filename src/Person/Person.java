@@ -35,10 +35,6 @@ abstract public class Person {
         this.destroyed = destroyed;
     }
 
-    public Person(String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
     }
@@ -61,6 +57,17 @@ abstract public class Person {
 
     public boolean isDestroyed() {
         return destroyed;
+    }
+
+    public Person(String name) {
+        this.name = name;
+    }
+
+    public Person(String name, int hp, int skill, boolean destroyed) {
+        this.name = name;
+        this.hp = hp;
+        this.skill = skill;
+        this.destroyed = destroyed;
     }
 
     protected boolean damageFromPlayer() {
