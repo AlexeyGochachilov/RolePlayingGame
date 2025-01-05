@@ -15,7 +15,6 @@ abstract public class Person {
         Person.power = power;
     }
 
-
     public void setName(String name) {
         this.name = name;
     }
