@@ -36,13 +36,13 @@ public class Battle {
         }
         int defenderHealth = defender.getHp() - hit;
         if (hit != 0) {
-            System.out.println(String.format("%s Нанес удар в %d единиц!", attacker.getName(), hit));
+            System.out.println(String.format("%s Нанес удар в %d единиц! %d", attacker.getName(), hit, attacker.getLevel()));
             System.out.println(String.format("У %s осталось %d единиц здоровья...", defender.getName(), defenderHealth));
         } else {
-            System.out.println(String.format("%s промахнулся!", attacker.getName()));
+            System.out.println(String.format("%s промахнулся! %d", attacker.getName(), attacker.getLevel()));
         }
         if (defenderHealth <= 0 && defender instanceof Player) {
-            System.out.println("Извините, вы пали в бою...");
+            System.out.println("Извините, вы пали в бою... " + defender.getLevel());
             fightCallback.fightLost();
             return true;
         } else if (defenderHealth <= 0) {

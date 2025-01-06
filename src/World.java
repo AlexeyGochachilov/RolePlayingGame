@@ -24,8 +24,9 @@ public class World {
 
     private static void command(String string) throws IOException {
         if (player == null) {
-            player = new Player(string, 10, 5, 10, 0, 0);
-            System.out.println(String.format("Добро пожаловать в наш мир %s! Да пребудет с тобой удача", player.getName()));
+            player = new Player(string, 10, 5, 10, 90, 0);
+            player.setLevel(1);
+            System.out.println(String.format("Добро пожаловать в наш мир %s! Да пребудет с тобой удача!", player.getName()));
             printNavigation();
         }
         switch (string) {
@@ -39,6 +40,11 @@ public class World {
             }
             break;
             case "3":
+                player.checkExperience();
+                player.levelUp();
+                printNavigation();
+                command(br.readLine());
+            case "4":
                 System.exit(1);
                 break;
             case "да":
@@ -56,7 +62,8 @@ public class World {
         System.out.println("Куда вы хотите пойти?");
         System.out.println("1. К Торговцу");
         System.out.println("2. В темный лес");
-        System.out.println("3. Выход");
+        System.out.println("3. Увеличить уровень");
+        System.out.println("4. Выход");
     }
 
     private static void commitFight() {
@@ -82,15 +89,20 @@ public class World {
 
     private static Person createMonster() {
         String[][] nameOfMonster = new String[][]{{"Hoblin", "Voblin", "Doblin", "Blin", "Erick"},
-            {"Bonye", "WithOutSkin", "Dead", "Eleton", "Boris"}};
+                {"Bonye", "WithOutSkin", "Dead", "Eleton", "Boris"}};
         int name = new Random().nextInt(5);
         int random = (int) (Math.random() * 10);
-        if (random % 2 == 0) return new Goblin(nameOfMonster[0][name], 5, 1, 1, 10, 10);
-        else return new Skeleton(nameOfMonster[1][name], 3, 1, 1, 5, 5);
+        if (random % 2 == 0) return new Goblin(nameOfMonster[0][name], 5 * player.getLevel(),
+                1 * player.getLevel(), 1 * player.getLevel(),
+                10 * player.getLevel(), 10 * player.getLevel());
+        else return new Skeleton(nameOfMonster[1][name], 3 * player.getLevel(),
+                1 * player.getLevel(), 1 * player.getLevel(),
+                5 * player.getLevel(), 5 * player.getLevel());
     }
 
     interface FightCallback {
         void fightWin();
+
         void fightLost();
     }
 }

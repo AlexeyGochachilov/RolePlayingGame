@@ -10,6 +10,7 @@ abstract public class Person implements Fight{
     private int skill;
     private int experience;
     private int gold;
+    private static int level;
 
     public Person(String name, int hp, int power, int skill, int experience, int gold) {
         this.name = name;
@@ -70,6 +71,34 @@ abstract public class Person implements Fight{
 
     private int getRandomValue() {
         return (int) (Math.random() * 100);
+    }
+
+    public static int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void checkExperience(){
+        if (getExperience()/getLevel() >=100){
+            System.out.println("Ты можешь увеличить уровень!");
+        } else {
+            System.out.println("У тебя не достаточно опыта :(");
+        }
+    }
+
+    public int levelUp(){
+        if (getExperience()/getLevel() >=100){
+            setLevel(level += 1);
+            setExperience(0);
+            setHp(getLevel()*getHp());
+            setPower(getLevel()*getPower());
+            setSkill(getLevel()*getSkill());
+            System.out.println("Твой Уровень увеличился, и стал:  " + level + " !");
+        }
+        return level;
     }
 
     @Override
