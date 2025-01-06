@@ -2,12 +2,8 @@ package Person;
 
 public class Skeleton extends Monster {
 
-    public Skeleton(String name) {
-        super(name + " The Skeleton");
-    }
 
-    @Override
-    public void attack(Person player) {
-        player.damageFromMonster();
+    public Skeleton(String name, int hp, int power, int skill, int experience, int gold) {
+        super(name, hp, power, skill, experience, gold);
     }
 }

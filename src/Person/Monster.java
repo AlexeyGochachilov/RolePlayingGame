@@ -1,13 +1,9 @@
 package Person;
 
-public abstract class Monster extends Person implements Fight {
-    protected static int experience = 3;
-    protected static int power =  1;
+public abstract class Monster extends Person {
 
-    public Monster(String name) {
-        super(name);
-        hp = 5;
-        skill = 5;
+    public Monster(String name, int hp, int power, int skill, int experience, int gold) {
+        super(name, hp, power, skill, experience, gold);
     }
-
 }
+

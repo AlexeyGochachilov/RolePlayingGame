@@ -1,8 +1,8 @@
 package Person;
 
-public class Trader extends Person {
-
+public class Trader {
+    String name;
     public Trader(String name) {
-        super(name);
+        this.name = name;
     }
 }

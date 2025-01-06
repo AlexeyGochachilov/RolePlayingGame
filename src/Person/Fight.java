@@ -2,6 +2,6 @@ package Person;
 
 public interface Fight {
 
-    public abstract void attack(Person person);
+    public abstract int attack();
 
 }

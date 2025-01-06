@@ -2,20 +2,10 @@ package Person;
 
 import java.util.Random;
 
-public class Player extends Person implements Fight{
+public class Player extends Person {
 
-    public Player(String name) {
-        super(name);
-        hp = 10;
-        skill = 10;
-        experience = 10;
-        power = 3;
-        System.out.println("Player: " + name + " was created");
+
+    public Player(String name, int hp, int power, int skill, int experience, int gold) {
+        super(name, hp, power, skill, experience, gold);
     }
-
-    @Override
-    public void attack(Person monster) {
-        monsterz.damageFromPlayer();
-    }
-
 }
