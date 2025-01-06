@@ -1,5 +1,3 @@
-import Person.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,15 +15,24 @@ public class World {
         System.out.println("Введите имя персонажа:");
         try {
             command(br.readLine());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    private static void printNavigation() {
+        System.out.println("Управление происходит при помощи цифр, а так же слов да и нет:");
+        System.out.println("Куда вы хотите пойти?");
+        System.out.println("1. К Торговцу");
+        System.out.println("2. В темный лес");
+        System.out.println("3. Увеличить уровень");
+        System.out.println("4. Выход");
+    }
+
     private static void command(String string) throws IOException {
         if (player == null) {
-            player = new Player(string, 10, 5, 10, 90, 0);
-            player.setLevel(1);
+            player = new Player(string, 10, 5, 10, 90, 0, 1);
             System.out.println(String.format("Добро пожаловать в наш мир %s! Да пребудет с тобой удача!", player.getName()));
             printNavigation();
         }
@@ -40,11 +47,11 @@ public class World {
             }
             break;
             case "3":
-                player.checkExperience();
-                player.levelUp();
+                commitLevelUp();
                 printNavigation();
                 command(br.readLine());
             case "4":
+                System.out.println("Возвращайся за новыми сражениями...!");
                 System.exit(1);
                 break;
             case "да":
@@ -58,12 +65,33 @@ public class World {
         command(br.readLine());
     }
 
-    private static void printNavigation() {
-        System.out.println("Куда вы хотите пойти?");
-        System.out.println("1. К Торговцу");
-        System.out.println("2. В темный лес");
-        System.out.println("3. Увеличить уровень");
-        System.out.println("4. Выход");
+    private static Person createMonster() {
+        String[][] nameOfMonster = new String[][]{{"Hoblin", "Voblin", "Doblin", "Blin", "Erick"},
+                {"Bonye", "WithOutSkin", "Dead", "Eleton", "Boris"}};
+        int name = new Random().nextInt(5);
+        int random = (int) (Math.random() * 10);
+        if (random % 2 == 0) return new Goblin(nameOfMonster[0][name], 5 * player.getLevel(),
+                1 * player.getLevel(), 10 * player.getLevel(),
+                10 * player.getLevel(), 10 * player.getLevel(), player.getLevel());
+        else return new Skeleton(nameOfMonster[1][name], 3 * player.getLevel(),
+                1 * player.getLevel(), 5 * player.getLevel(),
+                5 * player.getLevel(), 5 * player.getLevel(), player.getLevel());
+    }
+
+    private static void commitLevelUp() {
+        player.checkExperience();
+        player.levelUp(new PlayerLevelUp() {
+
+            @Override
+            public void levelUpTrue() {
+                System.out.println("Твой Уровень увеличился, и стал:  " + +(player.getLevel() + 1) + " !");
+            }
+
+            @Override
+            public void levelUpFalse() {
+                System.out.println("Продолжай сражаться и копить опыт");
+            }
+        });
     }
 
     private static void commitFight() {
@@ -82,27 +110,21 @@ public class World {
 
             @Override
             public void fightLost() {
-
+                System.out.println("Возвращайся за новыми сражениями...!");
+                System.exit(1);
             }
         });
-    }
-
-    private static Person createMonster() {
-        String[][] nameOfMonster = new String[][]{{"Hoblin", "Voblin", "Doblin", "Blin", "Erick"},
-                {"Bonye", "WithOutSkin", "Dead", "Eleton", "Boris"}};
-        int name = new Random().nextInt(5);
-        int random = (int) (Math.random() * 10);
-        if (random % 2 == 0) return new Goblin(nameOfMonster[0][name], 5 * player.getLevel(),
-                1 * player.getLevel(), 1 * player.getLevel(),
-                10 * player.getLevel(), 10 * player.getLevel());
-        else return new Skeleton(nameOfMonster[1][name], 3 * player.getLevel(),
-                1 * player.getLevel(), 1 * player.getLevel(),
-                5 * player.getLevel(), 5 * player.getLevel());
     }
 
     interface FightCallback {
         void fightWin();
 
         void fightLost();
+    }
+
+    interface PlayerLevelUp {
+        void levelUpTrue();
+
+        void levelUpFalse();
     }
 }

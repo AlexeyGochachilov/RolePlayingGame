@@ -1,5 +1,3 @@
-import Person.*;
-
 import java.util.Random;
 
 public class Battle {
@@ -16,7 +14,7 @@ public class Battle {
                     isFightEnded = makeHit(player, monster, fightCallback);
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(1500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -36,13 +34,13 @@ public class Battle {
         }
         int defenderHealth = defender.getHp() - hit;
         if (hit != 0) {
-            System.out.println(String.format("%s Нанес удар в %d единиц! %d", attacker.getName(), hit, attacker.getLevel()));
+            System.out.println(String.format("%s Нанес удар в %d единиц!", attacker.getName(), hit));
             System.out.println(String.format("У %s осталось %d единиц здоровья...", defender.getName(), defenderHealth));
         } else {
-            System.out.println(String.format("%s промахнулся! %d", attacker.getName(), attacker.getLevel()));
+            System.out.println(String.format("%s промахнулся!", attacker.getName()));
         }
         if (defenderHealth <= 0 && defender instanceof Player) {
-            System.out.println("Извините, вы пали в бою... " + defender.getLevel());
+            System.out.println("Извините, вы пали в бою... ");
             fightCallback.fightLost();
             return true;
         } else if (defenderHealth <= 0) {
@@ -50,6 +48,9 @@ public class Battle {
                     defender.getExperience(), defender.getGold()));
             attacker.setExperience(attacker.getExperience() + defender.getExperience());
             attacker.setGold(attacker.getGold() + defender.getGold());
+            if (attacker.getExperience() / attacker.getLevel() >= 100) {
+                System.out.println("Ты можешь увеличить уровень!");
+            }
             fightCallback.fightWin();
             return true;
         } else {
@@ -58,15 +59,4 @@ public class Battle {
         }
     }
 
-
-//    String[][] nameOfMonster = new String[][]{{"Hoblin", "Voblin", "Doblin", "Blin", "Erick"},
-//            {"Bonye", "WithOutSkin", "Dead", "Eleton", "Boris"}};
-//
-//    public void run() {
-//        int name = new Random().nextInt(5);
-//        int oneOfTwo = new Random().nextInt(2) + 1;
-//        Goblin goblin = new Goblin(nameOfMonster[0][name]);
-//        Skeleton skeleton = new Skeleton(nameOfMonster[1][name]);
-//        Monster[] monsters = new Monster[]{goblin, skeleton};
-//    }
 }

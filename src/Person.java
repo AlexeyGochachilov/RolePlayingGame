@@ -1,24 +1,21 @@
-package Person;
-
-import java.util.Random;
-
-abstract public class Person implements Fight{
+abstract public class Person implements Fight {
 
     private String name;
     private int hp;
     private int power;
-    private int skill;
+    private double skill;
     private int experience;
     private int gold;
-    private static int level;
+    private int level;
 
-    public Person(String name, int hp, int power, int skill, int experience, int gold) {
+    public Person(String name, int hp, int power, double skill, int experience, int gold, int level) {
         this.name = name;
         this.hp = hp;
         this.power = power;
         this.skill = skill;
         this.experience = experience;
         this.gold = gold;
+        this.level = level;
     }
 
     public String getName() {
@@ -45,11 +42,11 @@ abstract public class Person implements Fight{
         this.power = power;
     }
 
-    public int getSkill() {
+    public double getSkill() {
         return skill;
     }
 
-    public void setSkill(int skill) {
+    public void setSkill(double skill) {
         this.skill = skill;
     }
 
@@ -73,7 +70,7 @@ abstract public class Person implements Fight{
         return (int) (Math.random() * 100);
     }
 
-    public static int getLevel() {
+    public int getLevel() {
         return level;
     }
 
@@ -81,24 +78,39 @@ abstract public class Person implements Fight{
         this.level = level;
     }
 
-    public void checkExperience(){
-        if (getExperience()/getLevel() >=100){
+    public void checkExperience() {
+        if (getExperience() / getLevel() >= 100) {
             System.out.println("Ты можешь увеличить уровень!");
         } else {
             System.out.println("У тебя не достаточно опыта :(");
         }
     }
 
-    public int levelUp(){
-        if (getExperience()/getLevel() >=100){
-            setLevel(level += 1);
-            setExperience(0);
-            setHp(getLevel()*getHp());
-            setPower(getLevel()*getPower());
-            setSkill(getLevel()*getSkill());
-            System.out.println("Твой Уровень увеличился, и стал:  " + level + " !");
+    public void levelUp(World.PlayerLevelUp playerLevelUp) {
+        Runnable runnable = () -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (getExperience() / getLevel() >= 100) {
+                playerLevelUp.levelUpTrue();
+                setLevel(level += 1);
+                setExperience(0);
+                setHp(getLevel() * getHp());
+                setPower(getLevel() * getPower());
+                setSkill(getLevel() / 2 * getSkill());
+            } else {
+                playerLevelUp.levelUpFalse();
+            }
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-        return level;
     }
 
     @Override
@@ -108,8 +120,13 @@ abstract public class Person implements Fight{
 
     @Override
     public int attack() {
-         if (skill * 3 > getRandomValue()) return power;
-        else return  0;
+        if (skill < 30) {
+            if (skill * 3 > getRandomValue()) return power;
+            else return 0;
+        } else if (skill >= 30) {
+            if (skill > getRandomValue()) return power;
+            else return 0;
+        }else return 0;
     }
 //    protected boolean damageFromPlayer() {
 //        int damage = 0;
