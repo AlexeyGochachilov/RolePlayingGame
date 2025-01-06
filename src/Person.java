@@ -7,6 +7,8 @@ abstract public class Person implements Fight {
     private int experience;
     private int gold;
     private int level;
+    private Items [] clothesItems = new Items[6];
+    private Items [] backpack = new Items[20];
 
     public Person(String name, int hp, int power, double skill, int experience, int gold, int level) {
         this.name = name;
@@ -79,6 +81,7 @@ abstract public class Person implements Fight {
     }
 
     public void checkExperience() {
+
         if (getExperience() / getLevel() >= 100) {
             System.out.println("Ты можешь увеличить уровень!");
         } else {
@@ -87,6 +90,7 @@ abstract public class Person implements Fight {
     }
 
     public void levelUp(World.PlayerLevelUp playerLevelUp) {
+
         Runnable runnable = () -> {
             try {
                 Thread.sleep(1000);
@@ -113,6 +117,22 @@ abstract public class Person implements Fight {
         }
     }
 
+    public Items[] getClothesItems() {
+        return clothesItems;
+    }
+
+    public void setClothesItems(Items[] clothesItems) {
+        this.clothesItems = clothesItems;
+    }
+
+    public Items[] getBackpack() {
+        return backpack;
+    }
+
+    public void setBackpack(Items[] backpack) {
+        this.backpack = backpack;
+    }
+
     @Override
     public String toString() {
         return String.format("%s здоровье:%d", name, hp);
@@ -120,6 +140,7 @@ abstract public class Person implements Fight {
 
     @Override
     public int attack() {
+
         if (skill < 30) {
             if (skill * 3 > getRandomValue()) return power;
             else return 0;
@@ -128,51 +149,5 @@ abstract public class Person implements Fight {
             else return 0;
         }else return 0;
     }
-//    protected boolean damageFromPlayer() {
-//        int damage = 0;
-//        int result = new Random().nextInt(100) + 1;
-//        if (Player.getExperience() * 3 > result) {
-//            if ((Player.getExperience() * 3) / result > 2) {
-//                damage = Player.getPower() * 2;
-//                hp -= damage;
-//                if (hp <= 0) {
-//                    destroyed = true;
-//                    System.out.println("Monster " + name + " was destroyed");
-//                    return true;
-//                }
-//                return false;
-//            } else {
-//                damage = Player.getPower();
-//                hp -= damage;
-//                if (hp <= 0) {
-//                    destroyed = true;
-//                    System.out.println("Monster " + name + " was destroyed");
-//                    return true;
-//                }
-//            }
-//            System.out.println("HP " + name + " = " + hp);
-//        } else {
-//            System.out.println("Player miss");
-//        }
-//        return false;
-//    }
-//
-//    protected boolean damageFromMonster() {
-//        int damage = 0;
-//        int result = new Random().nextInt(100) + 1;
-//        if (result < Monster.getExperience() * 3) {
-//            damage = Monster.getPower();
-//            hp -= damage;
-//            if (hp <= 0) {
-//                destroyed = true;
-//                System.out.println("Player " + name + " was destroyed");
-//                return true;
-//            }
-//            System.out.println("HP " + name + " = " + hp);
-//        } else {
-//            System.out.println("Monster miss");
-//        }
-//        return false;
-//    }
 
 }
