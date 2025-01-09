@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 abstract public class Person implements Fight {
 
     private String name;
@@ -7,8 +9,8 @@ abstract public class Person implements Fight {
     private int experience;
     private int gold;
     private int level;
-    private Items [] clothesItems = new Items[6];
-    private Items [] backpack = new Items[20];
+    private ArrayList <Items> clothesAndWeaponsItems = new ArrayList<>(8);
+    private ArrayList <Items> backpack = new ArrayList<>(20);
 
     public Person(String name, int hp, int power, double skill, int experience, int gold, int level) {
         this.name = name;
@@ -57,6 +59,9 @@ abstract public class Person implements Fight {
     }
 
     public void setExperience(int experience) {
+        if (experience > 100){
+            experience = 100;
+        }
         this.experience = experience;
     }
 
@@ -78,6 +83,30 @@ abstract public class Person implements Fight {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public ArrayList<Items> getClothesAndWeaponsItems() {
+        return clothesAndWeaponsItems;
+    }
+
+    public void setClothesAndWeaponsItems(ArrayList<Items> clothesAndWeaponsItems) {
+        this.clothesAndWeaponsItems = clothesAndWeaponsItems;
+    }
+
+    public ArrayList<Items> getBackpack() {
+        return backpack;
+    }
+
+    public void setBackpack(ArrayList<Items> backpack) {
+        this.backpack = backpack;
+    }
+
+    public void itemsInBackpack(){
+        int counter = 1;
+        for (Items it : backpack) {
+            System.out.println(counter + ": " + it.toString());
+            counter++;
+        }
     }
 
     public void checkExperience() {
@@ -117,20 +146,11 @@ abstract public class Person implements Fight {
         }
     }
 
-    public Items[] getClothesItems() {
-        return clothesItems;
-    }
+    public void getDres(){
 
-    public void setClothesItems(Items[] clothesItems) {
-        this.clothesItems = clothesItems;
-    }
+        if(!backpack.isEmpty()){
 
-    public Items[] getBackpack() {
-        return backpack;
-    }
-
-    public void setBackpack(Items[] backpack) {
-        this.backpack = backpack;
+        }
     }
 
     @Override

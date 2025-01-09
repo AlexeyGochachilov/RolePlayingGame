@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 abstract public class Items {
 
     private String name;
@@ -66,7 +68,20 @@ abstract public class Items {
 
     @Override
     public String toString() {
-        return name;
+        return name + " " + gold + " gold";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Items items = (Items) o;
+        return hp == items.hp && power == items.power && Double.compare(skill, items.skill) == 0
+                && experience == items.experience && gold == items.gold && Objects.equals(name, items.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, hp, power, skill, experience, gold);
+    }
 }
