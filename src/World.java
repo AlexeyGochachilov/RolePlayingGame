@@ -27,7 +27,10 @@ public class World {
         System.out.println("1. К Торговцу");
         System.out.println("2. В темный лес");
         System.out.println("3. Увеличить уровень");
-        System.out.println("4. Выход");
+        System.out.println("4. Одеть предметы");
+        System.out.println("5. Снять предметы");
+        System.out.println("6. Использовать зелье");
+        System.out.println("7. Выход");
     }
 
     private static void command(String string) throws IOException {
@@ -63,6 +66,16 @@ public class World {
                 printNavigation();
                 command(br.readLine());
             case "4":
+                player.itemsInBackpack();
+                commitGetDress();
+                printNavigation();
+                command(br.readLine());
+            case "5":
+                player.clothesAndArmorOnPlayer();
+                commitUnDress();
+                printNavigation();
+                command(br.readLine());
+            case "7":
                 System.out.println("Возвращайся за новыми сражениями...!");
                 System.exit(1);
                 break;
@@ -75,8 +88,8 @@ public class World {
                 printNavigation();
                 command(br.readLine());
             }
-            default:
-                System.out.println(player.getName() + " Вы ввели не подходящий символ");
+//            default:
+//                System.out.println(player.getName() + " Вы ввели не подходящий символ");
         }
         command(br.readLine());
     }
@@ -126,7 +139,8 @@ public class World {
                         @Override
                         public void MerchantsShopBuyTrue() {
                             System.out.println(player.getName() + " ты удачно купил " +
-                                    player.getBackpack().get(player.getBackpack().size() - 1));
+                                    player.getBackpack().get(player.getBackpack().size() - 1).getName());
+                            System.out.println(player.getName() + " у тебя осталось золота " + player.getGold());
                         }
 
                         @Override
@@ -203,6 +217,42 @@ public class World {
         });
     }
 
+    private static void commitGetDress() throws IOException {
+
+        if (!player.getBackpack().isEmpty()) {
+            player.getDressAndArmour(player.getBackpack().get(Integer.valueOf(br.readLine()) - 1), new GetDress() {
+                @Override
+                public void GetDressTrue() {
+                    System.out.println(player.getName() + " ты удачно одел " + player.getClothesAndWeaponsItems().
+                            get(player.getClothesAndWeaponsItems().size() - 1).getName());
+                }
+
+                @Override
+                public void GetDressFalse() {
+                    System.out.println("Попытка одеть предмет не увенчалась успехом");
+                }
+            });
+        }
+    }
+
+    private static void commitUnDress() throws IOException {
+
+        if (!player.getClothesAndWeaponsItems().isEmpty()) {
+            player.UnDress(player.getClothesAndWeaponsItems().get(Integer.valueOf(br.readLine()) - 1), new UnDress() {
+                @Override
+                public void UnDressTrue() {
+                    System.out.println(player.getName() + ", ты удачно снял " + player.getBackpack().
+                            get(player.getBackpack().size() - 1).getName());
+                }
+
+                @Override
+                public void UnDressFalse() {
+                    System.out.println("Ты потерял этот предмет... :(");
+                }
+            });
+        }
+    }
+
     interface FightCallback {
 
         void fightWin();
@@ -230,5 +280,19 @@ public class World {
         void MerchantsShopSellTrue();
 
         void MerchantsShopSellFalse();
+    }
+
+    interface GetDress {
+
+        void GetDressTrue();
+
+        void GetDressFalse();
+    }
+
+    interface UnDress {
+
+        void UnDressTrue();
+
+        void UnDressFalse();
     }
 }

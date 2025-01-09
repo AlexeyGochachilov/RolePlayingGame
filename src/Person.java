@@ -9,8 +9,12 @@ abstract public class Person implements Fight {
     private int experience;
     private int gold;
     private int level;
-    private ArrayList <Items> clothesAndWeaponsItems = new ArrayList<>(8);
-    private ArrayList <Items> backpack = new ArrayList<>(20);
+    private ArrayList<Items> clothesAndWeaponsItems = new ArrayList<>(9);
+    private ArrayList<Items> armour = new ArrayList<>();
+    private ArrayList<Items> clothes = new ArrayList<>();
+    private ArrayList<Items> rings = new ArrayList<>();
+    private ArrayList<Items> weapons = new ArrayList<>();
+    private ArrayList<Items> backpack = new ArrayList<>(20);
 
     public Person(String name, int hp, int power, double skill, int experience, int gold, int level) {
         this.name = name;
@@ -59,7 +63,7 @@ abstract public class Person implements Fight {
     }
 
     public void setExperience(int experience) {
-        if (experience > 100){
+        if (experience > 100) {
             experience = 100;
         }
         this.experience = experience;
@@ -101,10 +105,50 @@ abstract public class Person implements Fight {
         this.backpack = backpack;
     }
 
-    public void itemsInBackpack(){
+    public ArrayList<Items> getArmour() {
+        return armour;
+    }
+
+    public void setArmour(ArrayList<Items> armour) {
+        this.armour = armour;
+    }
+
+    public ArrayList<Items> getClothes() {
+        return clothes;
+    }
+
+    public void setClothes(ArrayList<Items> clothes) {
+        this.clothes = clothes;
+    }
+
+    public ArrayList<Items> getRings() {
+        return rings;
+    }
+
+    public void setRings(ArrayList<Items> rings) {
+        this.rings = rings;
+    }
+
+    public ArrayList<Items> getWeapons() {
+        return weapons;
+    }
+
+    public void setWeapons(ArrayList<Items> weapons) {
+        this.weapons = weapons;
+    }
+
+    public void itemsInBackpack() {
         int counter = 1;
         for (Items it : backpack) {
             System.out.println(counter + ": " + it.toString());
+            counter++;
+        }
+    }
+
+    public void clothesAndArmorOnPlayer() {
+        int counter = 1;
+        for (Items it : clothesAndWeaponsItems) {
+            System.out.println(counter + ": " + it.getName());
             counter++;
         }
     }
@@ -146,10 +190,108 @@ abstract public class Person implements Fight {
         }
     }
 
-    public void getDres(){
+    public void getDressAndArmour(Items items, World.GetDress getDress) {
 
-        if(!backpack.isEmpty()){
+        Runnable runnable = () -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (backpack.contains(items)) {
+                if (items instanceof Armour) {
+                    armour.add(items);
+                    if (armour.size() > 4) {
+                        getArmour().remove(4);
+                        getDress.GetDressFalse();
+                    } else {
+                        getDress.GetDressTrue();
+                    }
+                    backpack.remove(items);
+                    clothesAndWeaponsItems.addAll(armour);
+                    addPokazateli();
+                } else if (items instanceof Clothes) {
+                    clothes.add(items);
+                    if (clothes.size() > 2) {
+                        getClothes().remove(2);
+                        getDress.GetDressFalse();
+                    } else {
+                        getDress.GetDressTrue();
+                    }
+                    backpack.remove(items);
+                    clothesAndWeaponsItems.addAll(clothes);
+                    addPokazateli();
+                } else if (items instanceof Rings) {
+                    rings.add(items);
+                    if (rings.size() > 2) {
+                        getRings().remove(2);
+                        getDress.GetDressFalse();
+                    } else {
+                        getDress.GetDressTrue();
+                    }
+                    backpack.remove(items);
+                    clothesAndWeaponsItems.addAll(rings);
+                    addPokazateli();
+                } else if (items instanceof Weapons) {
+                    weapons.add(items);
+                    if (weapons.size() > 1) {
+                        getWeapons().remove(1);
+                        getDress.GetDressFalse();
+                    } else {
+                        getDress.GetDressTrue();
+                    }
+                    backpack.remove(items);
+                    clothesAndWeaponsItems.addAll(weapons);
+                    addPokazateli();
+                } else if (clothesAndWeaponsItems.size() > 9) {
+                    getClothesAndWeaponsItems().remove(9);
+                    getDress.GetDressFalse();
+                }
+            }
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    public void UnDress(Items items, World.UnDress unDress) {
+
+        Runnable runnable = () -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (clothesAndWeaponsItems.contains(items)) {
+                getClothesAndWeaponsItems().remove(items);
+                if (backpack.size() <= 20) {
+                    getBackpack().add(items);
+                }
+                addPokazateli();
+                unDress.UnDressTrue();
+            } else {
+                unDress.UnDressFalse();
+            }
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addPokazateli() {
+        for (Items it : getClothesAndWeaponsItems()) {
+            setHp(getHp() + it.getHp());
+            setPower(getPower() + it.getPower());
+            setSkill(getSkill() + it.getSkill());
+            setExperience(getExperience() + it.getExperience());
         }
     }
 
@@ -167,7 +309,7 @@ abstract public class Person implements Fight {
         } else if (skill >= 30) {
             if (skill > getRandomValue()) return power;
             else return 0;
-        }else return 0;
+        } else return 0;
     }
 
 }

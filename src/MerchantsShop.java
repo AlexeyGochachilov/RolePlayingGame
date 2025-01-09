@@ -42,10 +42,10 @@ public class MerchantsShop {
                 e.printStackTrace();
             }
             player.getBackpack().add(items);
-            if (player.getBackpack().size() < 20) {
+            if (player.getBackpack().size() <= 20) {
                 player.setGold(player.getGold() - items.getGold());
                 merchantsShopMarket.MerchantsShopBuyTrue();
-            } else if (player.getBackpack().size() == 20) {
+            } else if (player.getBackpack().size() > 20) {
                 player.getBackpack().remove(20);
                 merchantsShopMarket.MerchantsShopBuyFalse();
             }
