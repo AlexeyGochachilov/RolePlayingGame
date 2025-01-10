@@ -211,6 +211,7 @@ abstract public class Person implements Fight {
                         backpack.remove(items);
                         if (!clothesAndWeaponsItems.contains(items)) {
                             clothesAndWeaponsItems.add(items);
+                            getDress.GetDressTrue();
                         }
                     }
                 } else if (items instanceof Clothes) {
@@ -223,6 +224,7 @@ abstract public class Person implements Fight {
                         backpack.remove(items);
                         if (!clothesAndWeaponsItems.contains(items)) {
                             clothesAndWeaponsItems.add(items);
+                            getDress.GetDressTrue();
                         }
                     }
                 } else if (items instanceof Rings) {
@@ -235,6 +237,7 @@ abstract public class Person implements Fight {
                         backpack.remove(items);
                         if (!clothesAndWeaponsItems.contains(items)) {
                             clothesAndWeaponsItems.add(items);
+                            getDress.GetDressTrue();
                         }
                     }
                 } else if (items instanceof Weapons) {
@@ -247,13 +250,13 @@ abstract public class Person implements Fight {
                         backpack.remove(items);
                         if (!clothesAndWeaponsItems.contains(items)) {
                             clothesAndWeaponsItems.add(items);
+                            getDress.GetDressTrue();
                         }
                     }
                 } else if (clothesAndWeaponsItems.size() > 9) {
                     getClothesAndWeaponsItems().remove(9);
                     getDress.GetDressFalse();
                 }
-                getDress.GetDressTrue();
             } else getDress.GetDressFalse();
         };
         Thread thread = new Thread(runnable);

@@ -30,12 +30,13 @@ public class World {
         System.out.println("4. Одеть предметы");
         System.out.println("5. Снять предметы");
         System.out.println("6. Использовать зелье");
-        System.out.println("7. Выход");
+        System.out.println("7. Испытания в подземелье");
+        System.out.println("8. Выход");
     }
 
     private static void command(String string) throws IOException {
         if (player == null) {
-            player = new Player(string, 10, 5, 10, 100, 100, 1);
+            player = new Player(string, 10, 5, 10, 0, 0, 1);
             System.out.println(String.format("Добро пожаловать в наш мир %s! Да пребудет с тобой удача!", player.getName()));
             System.out.println("Управление происходит при помощи цифр, а так же слов: да, нет, купить, продать:");
             printNavigation();
@@ -76,9 +77,12 @@ public class World {
                 printNavigation();
                 break;
             case "6":
+                player.itemsInBackpack();
                 commitUsePotion();
                 break;
             case "7":
+                commitFightWithBoss();
+            case "8":
                 System.out.println("Возвращайся за новыми сражениями...!");
                 System.exit(1);
                 break;
@@ -101,14 +105,27 @@ public class World {
         command(br.readLine());
     }
 
+    private static Person createBoss() {
+        Person boss = createMonster();
+        boss.setSkill(player.getSkill());
+        boss.setHp(10 * player.getHp());
+        boss.setExperience(player.getExperience());
+        boss.setGold(100 * player.getLevel());
+        boss.setPower(player.getPower());
+        return boss;
+    }
+
     private static Person createMonster() {
         String[][] nameOfMonster = new String[][]{{"Hoblin", "Voblin", "Doblin", "Blin", "Erick"},
-                {"Bonye", "WithOutSkin", "Dead", "Eleton", "Boris"}};
+                {"Bonye", "WithOutSkin", "Dead", "Eleton", "Boris"}, {"Fire", "Sunshine", "Extinguisher", "Fly", "Zed"}};
         int name = new Random().nextInt(5);
-        int random = (int) (Math.random() * 10);
+        int random = (int) (Math.random() * 100);
         if (random % 2 == 0) return new Goblin("Goblin " + nameOfMonster[0][name], 5 * player.getLevel(),
                 1 * player.getLevel(), 10 * player.getLevel(),
                 10 * player.getLevel(), 10 * player.getLevel(), player.getLevel());
+        else if (random % 3 == 0)return new Goblin("Dragon " + nameOfMonster[2][name], player.getHp(),
+                4 * player.getLevel(), 10 * player.getLevel(),
+                10 * player.getLevel(), 15 * player.getLevel(), player.getLevel());
         else return new Skeleton("Skeleton " + nameOfMonster[1][name], 3 * player.getLevel(),
                 1 * player.getLevel(), 5 * player.getLevel(),
                 5 * player.getLevel(), 5 * player.getLevel(), player.getLevel());
@@ -196,6 +213,30 @@ public class World {
             @Override
             public void levelUpFalse() {
                 System.out.println("Продолжай сражаться и копить опыт");
+            }
+        });
+    }
+
+    private static void commitFightWithBoss() {
+
+        battleScene.fight(player, createBoss(), new FightCallback() {
+
+            @Override
+            public void fightWin() {
+                System.out.println(String.format("%s победил! Теперь у вас %d опыта и %d золота, а также осталось" +
+                        " %d едениц здоровья.", player.getName(), player.getExperience(), player.getGold(), player.getHp()));
+                System.out.println("Желаете продолжить поход или вернуться в город? (да/нет)");
+                try {
+                    command(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void fightLost() {
+                System.out.println("Возвращайся за новыми сражениями...!");
+                System.exit(1);
             }
         });
     }
