@@ -12,7 +12,7 @@ public class MerchantsShop {
 
         Runnable runnable = () -> {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -37,7 +37,7 @@ public class MerchantsShop {
 
         Runnable runnable = () -> {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

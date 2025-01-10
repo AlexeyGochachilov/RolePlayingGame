@@ -172,11 +172,13 @@ abstract public class Person implements Fight {
             }
             if (getExperience() / getLevel() >= 100) {
                 playerLevelUp.levelUpTrue();
+                removeIndicator();
                 setLevel(level += 1);
                 setExperience(0);
                 setHp(getLevel() * getHp());
                 setPower(getLevel() * getPower());
                 setSkill(getLevel() / 2 * getSkill());
+                addIndicator();
             } else {
                 playerLevelUp.levelUpFalse();
             }
@@ -194,7 +196,7 @@ abstract public class Person implements Fight {
 
         Runnable runnable = () -> {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -205,49 +207,54 @@ abstract public class Person implements Fight {
                         getArmour().remove(4);
                         getDress.GetDressFalse();
                     } else {
-                        getDress.GetDressTrue();
+                        addIndicator(items);
+                        backpack.remove(items);
+                        if (!clothesAndWeaponsItems.contains(items)) {
+                            clothesAndWeaponsItems.add(items);
+                        }
                     }
-                    backpack.remove(items);
-                    clothesAndWeaponsItems.addAll(armour);
-                    addPokazateli();
                 } else if (items instanceof Clothes) {
                     clothes.add(items);
                     if (clothes.size() > 2) {
                         getClothes().remove(2);
                         getDress.GetDressFalse();
                     } else {
-                        getDress.GetDressTrue();
+                        addIndicator(items);
+                        backpack.remove(items);
+                        if (!clothesAndWeaponsItems.contains(items)) {
+                            clothesAndWeaponsItems.add(items);
+                        }
                     }
-                    backpack.remove(items);
-                    clothesAndWeaponsItems.addAll(clothes);
-                    addPokazateli();
                 } else if (items instanceof Rings) {
                     rings.add(items);
                     if (rings.size() > 2) {
                         getRings().remove(2);
                         getDress.GetDressFalse();
                     } else {
-                        getDress.GetDressTrue();
+                        addIndicator(items);
+                        backpack.remove(items);
+                        if (!clothesAndWeaponsItems.contains(items)) {
+                            clothesAndWeaponsItems.add(items);
+                        }
                     }
-                    backpack.remove(items);
-                    clothesAndWeaponsItems.addAll(rings);
-                    addPokazateli();
                 } else if (items instanceof Weapons) {
                     weapons.add(items);
                     if (weapons.size() > 1) {
                         getWeapons().remove(1);
                         getDress.GetDressFalse();
                     } else {
-                        getDress.GetDressTrue();
+                        addIndicator(items);
+                        backpack.remove(items);
+                        if (!clothesAndWeaponsItems.contains(items)) {
+                            clothesAndWeaponsItems.add(items);
+                        }
                     }
-                    backpack.remove(items);
-                    clothesAndWeaponsItems.addAll(weapons);
-                    addPokazateli();
                 } else if (clothesAndWeaponsItems.size() > 9) {
                     getClothesAndWeaponsItems().remove(9);
                     getDress.GetDressFalse();
                 }
-            }
+                getDress.GetDressTrue();
+            } else getDress.GetDressFalse();
         };
         Thread thread = new Thread(runnable);
         thread.start();
@@ -262,16 +269,16 @@ abstract public class Person implements Fight {
 
         Runnable runnable = () -> {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             if (clothesAndWeaponsItems.contains(items)) {
                 getClothesAndWeaponsItems().remove(items);
-                if (backpack.size() <= 20) {
+                if (backpack.size() < 20) {
                     getBackpack().add(items);
                 }
-                addPokazateli();
+                removeIndicator(items);
                 unDress.UnDressTrue();
             } else {
                 unDress.UnDressFalse();
@@ -286,12 +293,64 @@ abstract public class Person implements Fight {
         }
     }
 
-    public void addPokazateli() {
+    public void addIndicator(Items items) {
+        if (!clothesAndWeaponsItems.contains(items)) {
+            setHp(getHp() + items.getHp());
+            setPower(getPower() + items.getPower());
+            setSkill(getSkill() + items.getSkill());
+            setExperience(getExperience() + items.getExperience());
+        }
+    }
+
+    public void addIndicator() {
         for (Items it : getClothesAndWeaponsItems()) {
             setHp(getHp() + it.getHp());
             setPower(getPower() + it.getPower());
             setSkill(getSkill() + it.getSkill());
             setExperience(getExperience() + it.getExperience());
+        }
+    }
+
+    public void removeIndicator() {
+        for (Items it : getClothesAndWeaponsItems()) {
+            setHp(getHp() - it.getHp());
+            setPower(getPower() - it.getPower());
+            setSkill(getSkill() - it.getSkill());
+            setExperience(getExperience() - it.getExperience());
+        }
+    }
+
+    public void removeIndicator(Items items) {
+        setHp(getHp() - items.getHp());
+        setPower(getPower() - items.getPower());
+        setSkill(getSkill() - items.getSkill());
+        setExperience(getExperience() - items.getExperience());
+    }
+
+    public void usePotions(Items items, World.UsePotion usePotion) {
+
+        Runnable runnable = () -> {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (!backpack.contains(items)) {
+                if (items instanceof Potions) {
+                    setHp(getHp() + items.getHp());
+                    setPower(getPower() + items.getPower());
+                    setSkill(getSkill() + items.getSkill());
+                    setExperience(getExperience() + items.getExperience());
+                    usePotion.UsePotionTrue();
+                }
+            }else usePotion.UsePotionFalse();
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 

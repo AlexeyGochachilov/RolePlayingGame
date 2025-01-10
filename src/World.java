@@ -51,30 +51,33 @@ public class World {
             case "купить":
                 commitMerchantsShopBuy();
                 printNavigation();
-                command(br.readLine());
+                break;
             case "ghjlfnm":
             case "продать":
                 player.itemsInBackpack();
                 commitMerchantsShopSell();
                 printNavigation();
-                command(br.readLine());
+                break;
             case "2":
                 commitFight();
                 break;
             case "3":
                 commitLevelUp();
                 printNavigation();
-                command(br.readLine());
+                break;
             case "4":
                 player.itemsInBackpack();
                 commitGetDress();
                 printNavigation();
-                command(br.readLine());
+                break;
             case "5":
                 player.clothesAndArmorOnPlayer();
                 commitUnDress();
                 printNavigation();
-                command(br.readLine());
+                break;
+            case "6":
+                commitUsePotion();
+                break;
             case "7":
                 System.out.println("Возвращайся за новыми сражениями...!");
                 System.exit(1);
@@ -88,8 +91,12 @@ public class World {
                 printNavigation();
                 command(br.readLine());
             }
-//            default:
-//                System.out.println(player.getName() + " Вы ввели не подходящий символ");
+            default:
+                if (string.equals(player.getName())) {
+                    break;
+                } else {
+                    System.out.println(player.getName() + " Вы ввели не подходящий символ");
+                }
         }
         command(br.readLine());
     }
@@ -217,40 +224,71 @@ public class World {
         });
     }
 
-    private static void commitGetDress() throws IOException {
+    private static void commitGetDress() {
 
         if (!player.getBackpack().isEmpty()) {
-            player.getDressAndArmour(player.getBackpack().get(Integer.valueOf(br.readLine()) - 1), new GetDress() {
-                @Override
-                public void GetDressTrue() {
-                    System.out.println(player.getName() + " ты удачно одел " + player.getClothesAndWeaponsItems().
-                            get(player.getClothesAndWeaponsItems().size() - 1).getName());
-                }
+            try {
+                player.getDressAndArmour(player.getBackpack().get(Integer.valueOf(br.readLine()) - 1), new GetDress() {
+                    @Override
+                    public void GetDressTrue() {
+                        System.out.println(player.getName() + " ты удачно одел " + player.getClothesAndWeaponsItems().
+                                get(player.getClothesAndWeaponsItems().size() - 1).getName());
+                    }
 
-                @Override
-                public void GetDressFalse() {
-                    System.out.println("Попытка одеть предмет не увенчалась успехом");
-                }
-            });
-        }
+                    @Override
+                    public void GetDressFalse() {
+                        System.out.println("Попытка одеть предмет не увенчалась успехом");
+                    }
+                });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else System.out.println("Попытка одеть предмет не увенчалась успехом");
     }
 
-    private static void commitUnDress() throws IOException {
+    private static void commitUnDress() {
 
         if (!player.getClothesAndWeaponsItems().isEmpty()) {
-            player.UnDress(player.getClothesAndWeaponsItems().get(Integer.valueOf(br.readLine()) - 1), new UnDress() {
-                @Override
-                public void UnDressTrue() {
-                    System.out.println(player.getName() + ", ты удачно снял " + player.getBackpack().
-                            get(player.getBackpack().size() - 1).getName());
-                }
+            try {
+                player.UnDress(player.getClothesAndWeaponsItems().get(Integer.valueOf(br.readLine()) - 1), new UnDress() {
+                    @Override
+                    public void UnDressTrue() {
+                        System.out.println(player.getName() + ", ты удачно снял " + player.getBackpack().
+                                get(player.getBackpack().size() - 1).getName());
+                    }
 
-                @Override
-                public void UnDressFalse() {
-                    System.out.println("Ты потерял этот предмет... :(");
-                }
-            });
+                    @Override
+                    public void UnDressFalse() {
+                        System.out.println("Ты потерял этот предмет... :(");
+                    }
+                });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else System.out.println(player.getName() + " тебе нечего снимать");
+    }
+
+    private static void commitUsePotion() {
+
+        if (!player.getBackpack().isEmpty()) {
+            try {
+                player.usePotions(player.getBackpack().get(Integer.valueOf(br.readLine()) - 1), new UsePotion() {
+                    @Override
+                    public void UsePotionTrue() {
+                        System.out.println(String.format("%s, ты удачно использовал зелье!", player.getName()));
+                    }
+
+                    @Override
+                    public void UsePotionFalse() {
+                        System.out.println("зелье не использовано :(");
+                    }
+                });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
+        System.out.println(String.format("%s, у тебя нет зелий", player.getName()));
+
     }
 
     interface FightCallback {
@@ -294,5 +332,12 @@ public class World {
         void UnDressTrue();
 
         void UnDressFalse();
+    }
+
+    interface UsePotion {
+
+        void UsePotionTrue();
+
+        void UsePotionFalse();
     }
 }
