@@ -8,32 +8,7 @@ public class MerchantsShop {
         return itemsMerchantsShop;
     }
 
-    public void sellItems(Person player, Items items, World.MerchantsShopMarketSell merchantsShopMarket) {
-
-        Runnable runnable = () -> {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (player.getBackpack().contains(items)) {
-                player.getBackpack().remove(items);
-                player.setGold(player.getGold() + items.getGold() / 2);
-                merchantsShopMarket.MerchantsShopSellTrue();
-            } else {
-                merchantsShopMarket.MerchantsShopSellFalse();
-            }
-        };
-        Thread thread = new Thread(runnable);
-        thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void buyItems(Person player, Items items, World.MerchantsShopMarketBuy merchantsShopMarket) {
+    public void buyItems(Person player, Items items, World.TrueOreFalse merchantsShopMarket) {
 
         Runnable runnable = () -> {
             try {
@@ -42,12 +17,17 @@ public class MerchantsShop {
                 e.printStackTrace();
             }
             player.getBackpack().add(items);
-            if (player.getBackpack().size() <= 20) {
+            if (player.getBackpack().size() <= 20 && player.getGold() >= 1) {
                 player.setGold(player.getGold() - items.getGold());
-                merchantsShopMarket.MerchantsShopBuyTrue();
+                merchantsShopMarket.trueTrue();
             } else if (player.getBackpack().size() > 20) {
                 player.getBackpack().remove(20);
-                merchantsShopMarket.MerchantsShopBuyFalse();
+                merchantsShopMarket.falseFalse();
+            } else if (player.getGold() < 1) merchantsShopMarket.falseFalse();
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         };
         Thread thread = new Thread(runnable);

@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class Battle {
 
-    public void fight(Person player, Person monster, World.FightCallback fightCallback) {
+    public void fight(Person player, Person monster, World.TrueOreFalse fightCallback) {
         Runnable runnable = () -> {
             int turn = 1;
             boolean isFightEnded = false;
@@ -24,7 +24,7 @@ public class Battle {
         thread.start();
     }
 
-    private Boolean makeHit(Person defender, Person attacker, World.FightCallback fightCallback) {
+    private Boolean makeHit(Person defender, Person attacker, World.TrueOreFalse fightCallback) {
         int hit = attacker.attack();
         if (attacker instanceof Player && hit != 0) {
             int xTwo = new Random().nextInt(100) + 1;
@@ -41,7 +41,7 @@ public class Battle {
         }
         if (defenderHealth <= 0 && defender instanceof Player) {
             System.out.println("Извините, вы пали в бою... ");
-            fightCallback.fightLost();
+            fightCallback.falseFalse();
             return true;
         } else if (defenderHealth <= 0) {
             System.out.println(String.format("Враг повержен! Вы получаете %d опыт и %d золота",
@@ -51,7 +51,7 @@ public class Battle {
             if (attacker.getExperience() / attacker.getLevel() >= 100) {
                 System.out.println("Ты можешь увеличить уровень!");
             }
-            fightCallback.fightWin();
+            fightCallback.trueTrue();
             return true;
         } else {
             defender.setHp(defenderHealth);

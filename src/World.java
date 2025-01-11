@@ -27,7 +27,7 @@ public class World {
         System.out.println("1. К Торговцу");
         System.out.println("2. В темный лес");
         System.out.println("3. Увеличить уровень");
-        System.out.println("4. Одеть предметы");
+        System.out.println("4. Надеть предметы");
         System.out.println("5. Снять предметы");
         System.out.println("6. Использовать зелье");
         System.out.println("7. Испытания в подземелье");
@@ -36,7 +36,7 @@ public class World {
 
     private static void command(String string) throws IOException {
         if (player == null) {
-            player = new Player(string, 10, 5, 10, 0, 0, 1);
+            player = new Player(string, 10, 5, 10, 0, 30, 1);
             System.out.println(String.format("Добро пожаловать в наш мир %s! Да пребудет с тобой удача!", player.getName()));
             System.out.println("Управление происходит при помощи цифр, а так же слов: да, нет, купить, продать:");
             printNavigation();
@@ -45,8 +45,8 @@ public class World {
             case "1":
                 System.out.println("Взгляни на товары:");
                 creatMerchantsShop().lookAtItems();
-                System.out.println("Желаешь что-то купить или продать?");
-                System.out.println("Введи купить или продать и номер товара:");
+                System.out.println("Желаете что-то купить?");
+                command(br.readLine());
                 break;
             case "regbnm":
             case "купить":
@@ -82,6 +82,7 @@ public class World {
                 break;
             case "7":
                 commitFightWithBoss();
+                break;
             case "8":
                 System.out.println("Возвращайся за новыми сражениями...!");
                 System.exit(1);
@@ -112,6 +113,7 @@ public class World {
         boss.setExperience(player.getExperience());
         boss.setGold(100 * player.getLevel());
         boss.setPower(player.getPower());
+        boss.setName("Повелитель подземелья " + boss.getName());
         return boss;
     }
 
@@ -123,12 +125,12 @@ public class World {
         if (random % 2 == 0) return new Goblin("Goblin " + nameOfMonster[0][name], 5 * player.getLevel(),
                 1 * player.getLevel(), 10 * player.getLevel(),
                 10 * player.getLevel(), 10 * player.getLevel(), player.getLevel());
-        else if (random % 3 == 0)return new Goblin("Dragon " + nameOfMonster[2][name], player.getHp(),
+        else if (random % 3 == 0) return new Goblin("Dragon " + nameOfMonster[2][name], player.getHp(),
                 4 * player.getLevel(), 10 * player.getLevel(),
                 10 * player.getLevel(), 15 * player.getLevel(), player.getLevel());
         else return new Skeleton("Skeleton " + nameOfMonster[1][name], 3 * player.getLevel(),
-                1 * player.getLevel(), 5 * player.getLevel(),
-                5 * player.getLevel(), 5 * player.getLevel(), player.getLevel());
+                    1 * player.getLevel(), 5 * player.getLevel(),
+                    5 * player.getLevel(), 5 * player.getLevel(), player.getLevel());
     }
 
     private static MerchantsShop creatMerchantsShop() {
@@ -157,19 +159,20 @@ public class World {
 
     private static void commitMerchantsShopBuy() {
 
+        System.out.println("Введи номер товара:");
         try {
             creatMerchantsShop().buyItems(player, creatMerchantsShop().getItemsMerchantsShop().get(Integer.valueOf(br.readLine()) - 1),
-                    new MerchantsShopMarketBuy() {
+                    new TrueOreFalse() {
                         @Override
-                        public void MerchantsShopBuyTrue() {
+                        public void trueTrue() {
                             System.out.println(player.getName() + " ты удачно купил " +
                                     player.getBackpack().get(player.getBackpack().size() - 1).getName());
                             System.out.println(player.getName() + " у тебя осталось золота " + player.getGold());
                         }
 
                         @Override
-                        public void MerchantsShopBuyFalse() {
-                            System.out.println("В рюкзаке закончилось место :(");
+                        public void falseFalse() {
+                            System.out.println("Покупка не возможна :(");
                         }
                     });
         } catch (IOException e) {
@@ -178,18 +181,20 @@ public class World {
     }
 
     private static void commitMerchantsShopSell() {
+
         if (!player.getBackpack().isEmpty()) {
+            System.out.println("Введи номер предмета:");
             try {
-                creatMerchantsShop().sellItems(player, player.getBackpack().get(Integer.valueOf(br.readLine()) - 1),
-                        new MerchantsShopMarketSell() {
+                player.sellItems(player.getBackpack().get(Integer.valueOf(br.readLine()) - 1),
+                        new TrueOreFalse() {
 
                             @Override
-                            public void MerchantsShopSellTrue() {
+                            public void trueTrue() {
                                 System.out.println(player.getName() + " ты удачно продал свою вещь...");
                             }
 
                             @Override
-                            public void MerchantsShopSellFalse() {
+                            public void falseFalse() {
                                 System.out.println(player.getName() + " у тебя нет этого предмета ;)");
                             }
                         });
@@ -201,17 +206,15 @@ public class World {
 
     private static void commitLevelUp() {
 
-        player.checkExperience();
-
-        player.levelUp(new PlayerLevelUp() {
+        player.levelUp(new TrueOreFalse() {
 
             @Override
-            public void levelUpTrue() {
+            public void trueTrue() {
                 System.out.println("Твой Уровень увеличился, и стал:  " + +(player.getLevel() + 1) + " !");
             }
 
             @Override
-            public void levelUpFalse() {
+            public void falseFalse() {
                 System.out.println("Продолжай сражаться и копить опыт");
             }
         });
@@ -219,10 +222,10 @@ public class World {
 
     private static void commitFightWithBoss() {
 
-        battleScene.fight(player, createBoss(), new FightCallback() {
+        battleScene.fight(player, createBoss(), new TrueOreFalse() {
 
             @Override
-            public void fightWin() {
+            public void trueTrue() {
                 System.out.println(String.format("%s победил! Теперь у вас %d опыта и %d золота, а также осталось" +
                         " %d едениц здоровья.", player.getName(), player.getExperience(), player.getGold(), player.getHp()));
                 System.out.println("Желаете продолжить поход или вернуться в город? (да/нет)");
@@ -234,7 +237,7 @@ public class World {
             }
 
             @Override
-            public void fightLost() {
+            public void falseFalse() {
                 System.out.println("Возвращайся за новыми сражениями...!");
                 System.exit(1);
             }
@@ -243,10 +246,10 @@ public class World {
 
     private static void commitFight() {
 
-        battleScene.fight(player, createMonster(), new FightCallback() {
+        battleScene.fight(player, createMonster(), new TrueOreFalse() {
 
             @Override
-            public void fightWin() {
+            public void trueTrue() {
                 System.out.println(String.format("%s победил! Теперь у вас %d опыта и %d золота, а также осталось" +
                         " %d едениц здоровья.", player.getName(), player.getExperience(), player.getGold(), player.getHp()));
                 System.out.println("Желаете продолжить поход или вернуться в город? (да/нет)");
@@ -258,7 +261,7 @@ public class World {
             }
 
             @Override
-            public void fightLost() {
+            public void falseFalse() {
                 System.out.println("Возвращайся за новыми сражениями...!");
                 System.exit(1);
             }
@@ -268,38 +271,40 @@ public class World {
     private static void commitGetDress() {
 
         if (!player.getBackpack().isEmpty()) {
+            System.out.println("Введи номер предмета:");
             try {
-                player.getDressAndArmour(player.getBackpack().get(Integer.valueOf(br.readLine()) - 1), new GetDress() {
+                player.getDressAndArmour(player.getBackpack().get(Integer.valueOf(br.readLine()) - 1), new TrueOreFalse() {
                     @Override
-                    public void GetDressTrue() {
-                        System.out.println(player.getName() + " ты удачно одел " + player.getClothesAndWeaponsItems().
+                    public void trueTrue() {
+                        System.out.println(player.getName() + " ты удачно надел " + player.getClothesAndWeaponsItems().
                                 get(player.getClothesAndWeaponsItems().size() - 1).getName());
                     }
 
                     @Override
-                    public void GetDressFalse() {
-                        System.out.println("Попытка одеть предмет не увенчалась успехом");
+                    public void falseFalse() {
+                        System.out.println("Попытка надеть предмет не увенчалась успехом");
                     }
                 });
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        } else System.out.println("Попытка одеть предмет не увенчалась успехом");
+        } else System.out.println("Попытка надеть предмет не увенчалась успехом");
     }
 
     private static void commitUnDress() {
 
         if (!player.getClothesAndWeaponsItems().isEmpty()) {
+            System.out.println("Введи номер предмета:");
             try {
-                player.UnDress(player.getClothesAndWeaponsItems().get(Integer.valueOf(br.readLine()) - 1), new UnDress() {
+                player.UnDress(player.getClothesAndWeaponsItems().get(Integer.valueOf(br.readLine()) - 1), new TrueOreFalse() {
                     @Override
-                    public void UnDressTrue() {
+                    public void trueTrue() {
                         System.out.println(player.getName() + ", ты удачно снял " + player.getBackpack().
                                 get(player.getBackpack().size() - 1).getName());
                     }
 
                     @Override
-                    public void UnDressFalse() {
+                    public void falseFalse() {
                         System.out.println("Ты потерял этот предмет... :(");
                     }
                 });
@@ -313,72 +318,28 @@ public class World {
 
         if (!player.getBackpack().isEmpty()) {
             try {
-                player.usePotions(player.getBackpack().get(Integer.valueOf(br.readLine()) - 1), new UsePotion() {
+                player.usePotions(player.getBackpack().get(Integer.valueOf(br.readLine()) - 1), new TrueOreFalse() {
                     @Override
-                    public void UsePotionTrue() {
+                    public void trueTrue() {
                         System.out.println(String.format("%s, ты удачно использовал зелье!", player.getName()));
                     }
 
                     @Override
-                    public void UsePotionFalse() {
+                    public void falseFalse() {
                         System.out.println("зелье не использовано :(");
                     }
                 });
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
-        System.out.println(String.format("%s, у тебя нет зелий", player.getName()));
-
+        }  else System.out.println(String.format("%s, у тебя нет зелий", player.getName()));
     }
 
-    interface FightCallback {
+    interface TrueOreFalse {
 
-        void fightWin();
+        void trueTrue();
 
-        void fightLost();
+        void falseFalse();
     }
 
-    interface PlayerLevelUp {
-
-        void levelUpTrue();
-
-        void levelUpFalse();
-    }
-
-    interface MerchantsShopMarketBuy {
-
-        void MerchantsShopBuyTrue();
-
-        void MerchantsShopBuyFalse();
-
-    }
-
-    interface MerchantsShopMarketSell {
-
-        void MerchantsShopSellTrue();
-
-        void MerchantsShopSellFalse();
-    }
-
-    interface GetDress {
-
-        void GetDressTrue();
-
-        void GetDressFalse();
-    }
-
-    interface UnDress {
-
-        void UnDressTrue();
-
-        void UnDressFalse();
-    }
-
-    interface UsePotion {
-
-        void UsePotionTrue();
-
-        void UsePotionFalse();
-    }
 }
