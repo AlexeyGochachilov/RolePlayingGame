@@ -79,6 +79,7 @@ public class World {
             case "6":
                 player.itemsInBackpack();
                 commitUsePotion();
+                printNavigation();
                 break;
             case "7":
                 commitFightWithBoss();
