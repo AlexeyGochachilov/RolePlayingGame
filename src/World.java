@@ -77,7 +77,7 @@ public class World {
                 printNavigation();
                 break;
             case "6":
-                player.itemsInBackpack();
+                player.potionsInBackPack();
                 commitUsePotion();
                 printNavigation();
                 break;
@@ -333,7 +333,7 @@ public class World {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }  else System.out.println(String.format("%s, у тебя нет зелий", player.getName()));
+        } else System.out.println(String.format("%s, у тебя нет зелий", player.getName()));
     }
 
     interface TrueOreFalse {

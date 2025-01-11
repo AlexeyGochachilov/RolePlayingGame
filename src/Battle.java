@@ -3,25 +3,22 @@ import java.util.Random;
 public class Battle {
 
     public void fight(Person player, Person monster, World.TrueOreFalse fightCallback) {
-        Runnable runnable = () -> {
-            int turn = 1;
-            boolean isFightEnded = false;
-            while (!isFightEnded) {
-                System.out.println("----Ход: " + turn + "----");
-                if (turn++ % 2 != 0) {
-                    isFightEnded = makeHit(monster, player, fightCallback);
-                } else {
-                    isFightEnded = makeHit(player, monster, fightCallback);
-                }
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
+        int turn = 1;
+        boolean isFightEnded = false;
+        while (!isFightEnded) {
+            System.out.println("----Ход: " + turn + "----");
+            if (turn++ % 2 != 0) {
+                isFightEnded = makeHit(monster, player, fightCallback);
+            } else {
+                isFightEnded = makeHit(player, monster, fightCallback);
             }
-        };
-        Thread thread = new Thread(runnable);
-        thread.start();
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private Boolean makeHit(Person defender, Person attacker, World.TrueOreFalse fightCallback) {
