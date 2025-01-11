@@ -36,7 +36,7 @@ public class World {
 
     private static void command(String string) throws IOException {
         if (player == null) {
-            player = new Player(string, 10, 5, 10, 0, 30, 1);
+            player = new Player(string, 10, 5, 10, 0, 0, 1);
             System.out.println(String.format("Добро пожаловать в наш мир %s! Да пребудет с тобой удача!", player.getName()));
             System.out.println("Управление происходит при помощи цифр, а так же слов: да, нет, купить, продать:");
             printNavigation();
