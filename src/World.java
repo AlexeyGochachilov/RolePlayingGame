@@ -30,7 +30,7 @@ public class World {
         System.out.println("4. Надеть предметы");
         System.out.println("5. Снять предметы");
         System.out.println("6. Использовать зелье");
-        System.out.println("7. Испытания в подземелье");
+        System.out.println("7. Испытания в подземелье с боссом");
         System.out.println("8. Выход");
     }
 

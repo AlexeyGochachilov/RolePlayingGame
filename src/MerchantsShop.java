@@ -8,6 +8,7 @@ public class MerchantsShop {
         return itemsMerchantsShop;
     }
 
+    //покупка предметов
     public void buyItems(Person player, Items items, World.TrueOreFalse merchantsShopMarket) {
 
         try {
@@ -30,6 +31,7 @@ public class MerchantsShop {
         }
     }
 
+    //показ предметов в магазине
     public void lookAtItems() {
 
         int counter = 1;

@@ -137,6 +137,7 @@ abstract public class Person implements Fight {
         this.weapons = weapons;
     }
 
+    //предметы в рюкзаке
     public void itemsInBackpack() {
         int counter = 1;
         for (Items it : backpack) {
@@ -145,6 +146,7 @@ abstract public class Person implements Fight {
         }
     }
 
+    //зелья в рюкзаке
     public void potionsInBackPack() {
         int counter = 1;
         for (Items it : backpack) {
@@ -155,6 +157,7 @@ abstract public class Person implements Fight {
         }
     }
 
+    //одежда и оружие используемые игроком
     public void clothesAndArmorOnPlayer() {
         int counter = 1;
         for (Items it : clothesAndWeaponsItems) {
@@ -163,6 +166,7 @@ abstract public class Person implements Fight {
         }
     }
 
+    //проверка опыта
     public void checkExperience() {
 
         if (getExperience() / getLevel() >= 100) {
@@ -172,6 +176,7 @@ abstract public class Person implements Fight {
         }
     }
 
+    //увеличение опыта
     public void levelUp(World.TrueOreFalse playerLevelUp) {
 
         checkExperience();
@@ -199,6 +204,7 @@ abstract public class Person implements Fight {
         }
     }
 
+    //надевание одежды и оружия на персонажа
     public void getDressAndArmour(Items items, World.TrueOreFalse getDress) {
 
         try {
@@ -272,6 +278,7 @@ abstract public class Person implements Fight {
         }
     }
 
+    //раздевание персонажа
     public void UnDress(Items items, World.TrueOreFalse unDress) {
 
 
@@ -292,6 +299,7 @@ abstract public class Person implements Fight {
         }
     }
 
+    //добавление параметров которые есть у предмета
     public void addIndicator(Items items) {
         if (!clothesAndWeaponsItems.contains(items)) {
             setHp(getHp() + items.getHp());
@@ -301,6 +309,7 @@ abstract public class Person implements Fight {
         }
     }
 
+    //добавление параметров которые есть у предметов
     public void addIndicator() {
         for (Items it : getClothesAndWeaponsItems()) {
             setHp(getHp() + it.getHp());
@@ -310,6 +319,7 @@ abstract public class Person implements Fight {
         }
     }
 
+    //удаление параметров которые есть у предметов
     public void removeIndicator() {
         for (Items it : getClothesAndWeaponsItems()) {
             setHp(getHp() - it.getHp());
@@ -319,6 +329,7 @@ abstract public class Person implements Fight {
         }
     }
 
+    //удаление параметров которые есть у предмета
     public void removeIndicator(Items items) {
         setHp(getHp() - items.getHp());
         setPower(getPower() - items.getPower());
@@ -326,6 +337,7 @@ abstract public class Person implements Fight {
         setExperience(getExperience() - items.getExperience());
     }
 
+    //использование зелья
     public void usePotions(Items items, World.TrueOreFalse usePotion) {
 
         try {
@@ -350,6 +362,7 @@ abstract public class Person implements Fight {
         }
     }
 
+    //продажа предметов
     public void sellItems(Items items, World.TrueOreFalse merchantsShopMarket) {
 
         try {
