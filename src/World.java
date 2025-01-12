@@ -110,7 +110,7 @@ public class World {
     private static Person createBoss() {
         Person boss = createMonster();
         boss.setSkill(player.getSkill());
-        boss.setHp(10 * player.getHp());
+        boss.setHp(100 * player.getLevel());
         boss.setExperience(player.getExperience());
         boss.setGold(100 * player.getLevel());
         boss.setPower(player.getPower());
@@ -126,7 +126,7 @@ public class World {
         if (random % 2 == 0) return new Goblin("Goblin " + nameOfMonster[0][name], 5 * player.getLevel(),
                 1 * player.getLevel(), 10 * player.getLevel(),
                 10 * player.getLevel(), 10 * player.getLevel(), player.getLevel());
-        else if (random % 3 == 0) return new Goblin("Dragon " + nameOfMonster[2][name], player.getHp(),
+        else if (random % 3 == 0) return new Dragon("Dragon " + nameOfMonster[2][name], player.getHp(),
                 4 * player.getLevel(), 10 * player.getLevel(),
                 10 * player.getLevel(), 15 * player.getLevel(), player.getLevel());
         else return new Skeleton("Skeleton " + nameOfMonster[1][name], 3 * player.getLevel(),

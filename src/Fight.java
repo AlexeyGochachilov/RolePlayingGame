@@ -1,5 +1,5 @@
 public interface Fight {
 
-    public abstract int attack();
+    public abstract int attack(int i);
 
 }

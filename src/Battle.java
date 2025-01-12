@@ -2,9 +2,11 @@ import java.util.Random;
 
 public class Battle {
 
+    private static int turn;
+
     public void fight(Person player, Person monster, World.TrueOreFalse fightCallback) {
 
-        int turn = 1;
+        turn = 1;
         boolean isFightEnded = false;
         while (!isFightEnded) {
             System.out.println("----Ход: " + turn + "----");
@@ -22,7 +24,13 @@ public class Battle {
     }
 
     private Boolean makeHit(Person defender, Person attacker, World.TrueOreFalse fightCallback) {
-        int hit = attacker.attack();
+        int hit = attacker.attack(turn);
+        if (turn > 5){
+            hit = attacker.attack(turn * 2);
+        }
+        if (turn > 10){
+            hit = attacker.attack(turn * 5);
+        }
         if (attacker instanceof Player && hit != 0) {
             int xTwo = new Random().nextInt(100) + 1;
             if ((hit * 3) / xTwo >= 2) {
@@ -46,7 +54,9 @@ public class Battle {
             attacker.setExperience(attacker.getExperience() + defender.getExperience());
             attacker.setGold(attacker.getGold() + defender.getGold());
             if (attacker.getExperience() / attacker.getLevel() >= 100) {
+                System.out.println();
                 System.out.println("Ты можешь увеличить уровень!");
+                System.out.println();
             }
             fightCallback.trueTrue();
             return true;

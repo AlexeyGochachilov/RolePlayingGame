@@ -390,13 +390,13 @@ abstract public class Person implements Fight {
     }
 
     @Override
-    public int attack() {
+    public int attack(int i) {
 
         if (skill < 30) {
-            if (skill * 3 > getRandomValue()) return power;
+            if (skill * 3 > getRandomValue() - i) return power;
             else return 0;
         } else if (skill >= 30) {
-            if (skill > getRandomValue()) return power;
+            if (skill > getRandomValue() - i) return power;
             else return 0;
         } else return 0;
     }
