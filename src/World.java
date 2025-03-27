@@ -32,6 +32,7 @@ public class World {
         System.out.println("6. Использовать зелье");
         System.out.println("7. Испытания в подземелье с боссом");
         System.out.println("8. Выход");
+        System.out.println("9. Информация о игроке");
     }
 
     private static void command(String string) throws IOException {
@@ -87,6 +88,9 @@ public class World {
             case "8":
                 System.out.println("Возвращайся за новыми сражениями...!");
                 System.exit(1);
+                break;
+            case "9":
+                player.getInfo();
                 break;
             case "lf":
             case "да":
@@ -318,21 +322,27 @@ public class World {
     private static void commitUsePotion() {
 
         if (!player.getBackpack().isEmpty()) {
-            try {
-                player.usePotions(player.getBackpack().get(Integer.valueOf(br.readLine()) - 1), new TrueOreFalse() {
-                    @Override
-                    public void trueTrue() {
-                        System.out.println(String.format("%s, ты удачно использовал зелье!", player.getName()));
-                    }
+            for (Items it : player.getBackpack()){
+                if (it instanceof Potions){
+                    try {
+                        player.usePotions(player.getBackpack().get(Integer.valueOf(br.readLine()) - 1), new TrueOreFalse() {
+                            @Override
+                            public void trueTrue() {
+                                System.out.println(String.format("%s, ты удачно использовал зелье!", player.getName()));
+                            }
 
-                    @Override
-                    public void falseFalse() {
-                        System.out.println("зелье не использовано :(");
+                            @Override
+                            public void falseFalse() {
+                                System.out.println("зелье не использовано :(");
+                            }
+                        });
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                });
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                }
+                break;
             }
+
         } else System.out.println(String.format("%s, у тебя нет зелий", player.getName()));
     }
 

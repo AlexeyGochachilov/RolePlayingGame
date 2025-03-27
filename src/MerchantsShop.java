@@ -16,12 +16,14 @@ public class MerchantsShop {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        player.getBackpack().add(items);
-        if (player.getBackpack().size() <= 20 && player.getGold() >= 1) {
+        if (player.getBackpack().size() <= 20 && player.getGold() >= items.getGold()) {
+            player.getBackpack().add(items);
             player.setGold(player.getGold() - items.getGold());
             merchantsShopMarket.trueTrue();
         } else if (player.getBackpack().size() > 20) {
             player.getBackpack().remove(20);
+            merchantsShopMarket.falseFalse();
+        } else if (player.getGold() < items.getGold()) {
             merchantsShopMarket.falseFalse();
         } else if (player.getGold() < 1) merchantsShopMarket.falseFalse();
         try {

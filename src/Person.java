@@ -137,12 +137,25 @@ abstract public class Person implements Fight {
         this.weapons = weapons;
     }
 
+    //информация о персонаже
+    public void getInfo() {
+        System.out.println("Имя: " + getName());
+        System.out.println("Здоровье: " + getHp());
+        System.out.println("Сила: " + getPower());
+        System.out.println("Навык: " + getSkill());
+        System.out.println("Опыт: " + getExperience());
+        System.out.println("Золото: " + getGold());
+        System.out.println("Уровень: " + getLevel());
+    }
+
     //предметы в рюкзаке
     public void itemsInBackpack() {
         int counter = 1;
         for (Items it : backpack) {
-            System.out.println(counter + ": " + it.toString());
-            counter++;
+            if (it instanceof Armour || it instanceof Clothes || it instanceof Rings || it instanceof Weapons) {
+                System.out.println(counter + ": " + it.toString());
+                counter++;
+            }
         }
     }
 
@@ -386,7 +399,8 @@ abstract public class Person implements Fight {
 
     @Override
     public String toString() {
-        return String.format("%s здоровье:%d", name, hp);
+        return String.format("%s здоровье: %d",
+                name, hp);
     }
 
     @Override
